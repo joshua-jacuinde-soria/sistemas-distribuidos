@@ -126,17 +126,16 @@ def agregar_libro(libro: LibroBase):
     return respuesta
 
 # Put '/libros/{id}'
+# orden de parametros: primero los de ruta y luego los de cuerpo
 @app.put('/libros/{id}')
-def actualizar_disponibilidad_libro(id:int, unidades_disponibles:bool):
+def actualizar_disponibilidad_libro(id:int, libro:LibroBase):
     print("Atendiendo PUT /libros/",id)
-    if id >=0 and id <=len(libros)-1:
-        libros[id]['unidades_disponibles'] = unidades_disponibles
-        respuesta = {
-            "mensaje": "Unidades disponibles actualizadas",
-            "libro": libros[id]
-        }
-    else:
-        respuesta = {
-            "mensaje": "El libro no existe"
-        }
-    return respuesta
+    libros[id].titulo = libro.titulo
+    libros[id].unidades = libro.unidades
+    libros[id].autor = libro.autor
+    libros[id].unidades_disponibles = libro.unidades_disponibles
+    respuesta = {
+        "mensaje": "Libro actualizado",
+        "libro": libros[id]
+    }
+    return respuesta    
