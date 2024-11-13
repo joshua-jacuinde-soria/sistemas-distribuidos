@@ -139,3 +139,5 @@ def actualizar_disponibilidad_libro(id:int, libro:LibroBase):
         "libro": libros[id]
     }
     return respuesta    
+
+run(app, host='localhost', port=5000)
