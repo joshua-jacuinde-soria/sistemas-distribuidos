@@ -79,7 +79,7 @@ def informacion_usuario(id:int):
 #Método DELETE a un usuario
 #URL '/usuarios/{id}'
 #devuelve un mensaje
-@app.delete('/usuarios_borrar/{id}')
+@app.delete('/usuariosbo/{id}')
 def eliminar_usuario(id:int):
     print("Atendiendo DELETE /usuarios/",id)
     if id >=0 and id <=len(usuarios)-1:
