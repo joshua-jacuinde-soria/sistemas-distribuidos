@@ -107,5 +107,22 @@ class Prestamo(BaseModel):
 class UsuarioBase(BaseModel):
     nombre: str
     direccion: str
+    
+#Método POST a libros
+#URL '/libros'
+@app.post('/libros')
+def agregar_libro(libro: LibroBase):
+    print("Atendiendo POST /libros")
+    nuevo_libro = {}
+    nuevo_libro['titulo'] = libro.titulo
+    nuevo_libro['unidades'] = libro.unidades
+    nuevo_libro['autor'] = libro.autor
+    nuevo_libro['unidades_disponibles'] = libro.unidades_disponibles
+    libros.append(nuevo_libro)
+    respuesta = {
+        "mensaje": "Libro agregado",
+        "libro": nuevo_libro
+    }
+    return respuesta
 
 run(app, host='localhost', port=8000)
