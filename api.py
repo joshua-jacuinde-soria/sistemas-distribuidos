@@ -40,7 +40,7 @@ def informacion_libro(id:int):
 #Método DELETE
 #URL '/libros/{id}'
 #devuelve un mensaje
-@app.delete('/libros_borrar/{id}')
+@app.delete('/libros/{id}')
 def eliminar_libro(id:int):
     print("Atendiendo DELETE /libros/",id)
     if id >=0 and id <=len(libros)-1:
