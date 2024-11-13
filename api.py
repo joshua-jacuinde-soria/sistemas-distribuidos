@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from bd_biblioteca import libros, usuarios
 from uvicorn import run
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -79,7 +80,7 @@ def informacion_usuario(id:int):
 #Método DELETE a un usuario
 #URL '/usuarios/{id}'
 #devuelve un mensaje
-@app.delete('/usuariosbo/{id}')
+@app.delete('/usuarios/{id}') 
 def eliminar_usuario(id:int):
     print("Atendiendo DELETE /usuarios/",id)
     if id >=0 and id <=len(usuarios)-1:
@@ -93,5 +94,18 @@ def eliminar_usuario(id:int):
         }
     return respuesta
 
+class LibroBase(BaseModel):
+    titulo: str
+    unidades: int=1             #valor por defecto
+    autor: str
+    unidades_disponibles: bool=True     #valor por defecto
+    
+class Prestamo(BaseModel):
+    id_usuario: int
+    id_libro: int
+    
+class UsuarioBase(BaseModel):
+    nombre: str
+    direccion: str
 
 run(app, host='localhost', port=8000)
