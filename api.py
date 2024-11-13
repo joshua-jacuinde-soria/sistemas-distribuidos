@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from bd_biblioteca import libros
+from bd_biblioteca import libros, usuarios
 from uvicorn import run
 
 app = FastAPI()
@@ -39,7 +39,7 @@ def informacion_libro(id:int):
 #Método DELETE
 #URL '/libros/{id}'
 #devuelve un mensaje
-@app.delete('/libros/{id}')
+@app.delete('/libros_borrar/{id}')
 def eliminar_libro(id:int):
     print("Atendiendo DELETE /libros/",id)
     if id >=0 and id <=len(libros)-1:
@@ -52,5 +52,46 @@ def eliminar_libro(id:int):
             "mensaje": "El libro no existe"
         }
     return respuesta
+
+#Método Get a usuarios
+#URL '/usuarios'
+#devuelve la lista de usuarios
+@app.get('/usuarios')
+def lista_usuarios():
+    print("Atendiendo GET '/usuarios'")
+    respuesta = usuarios
+    return respuesta
+
+#Método Get a un solo usuario
+#URL '/usuarios/{id}'
+#devuelve un json
+@app.get('/usuarios/{id}')
+def informacion_usuario(id:int):
+    print("Atendiendo GET /usuarios/",id)
+    if id >=0 and id <=len(usuarios)-1:
+        respuesta = usuarios[id]
+    else:
+        respuesta = {
+            "mensaje":"El usuario no existe"
+        }
+    return respuesta
+
+#Método DELETE a un usuario
+#URL '/usuarios/{id}'
+#devuelve un mensaje
+@app.delete('/usuarios_borrar/{id}')
+def eliminar_usuario(id:int):
+    print("Atendiendo DELETE /usuarios/",id)
+    if id >=0 and id <=len(usuarios)-1:
+        respuesta = {
+            "mensaje": "El usuario ha sido eliminado"
+        }
+        del usuarios[id]
+    else:
+        respuesta = {
+            "mensaje": "El usuario no existe"
+        }
+    return respuesta
+
 
 run(app, host='localhost', port=8000)
