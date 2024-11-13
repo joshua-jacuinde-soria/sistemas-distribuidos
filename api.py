@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from bd_biblioteca import libros
+from uvicorn import run
 
 app = FastAPI()
 
@@ -45,9 +46,11 @@ def eliminar_libro(id:int):
         respuesta = {
             "mensaje": "El libro ha sido eliminado"
         }
-        libros.pop(id)
+        del libros[id]
     else:
         respuesta = {
             "mensaje": "El libro no existe"
         }
     return respuesta
+
+run(app, host='localhost', port=8000)
