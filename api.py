@@ -125,4 +125,18 @@ def agregar_libro(libro: LibroBase):
     }
     return respuesta
 
-run(app, host='localhost', port=8000)
+# Put '/libros/{id}'
+@app.put('/libros/{id}')
+def actualizar_disponibilidad_libro(id:int, unidades_disponibles:bool):
+    print("Atendiendo PUT /libros/",id)
+    if id >=0 and id <=len(libros)-1:
+        libros[id]['unidades_disponibles'] = unidades_disponibles
+        respuesta = {
+            "mensaje": "Unidades disponibles actualizadas",
+            "libro": libros[id]
+        }
+    else:
+        respuesta = {
+            "mensaje": "El libro no existe"
+        }
+    return respuesta
