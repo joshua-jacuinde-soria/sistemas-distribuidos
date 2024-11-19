@@ -3,6 +3,7 @@ from bd_biblioteca import libros, usuarios
 from uvicorn import run
 from pydantic import BaseModel
 from asyncpg import connect
+from typing import Optional
 
 
 app = FastAPI()
@@ -35,7 +36,7 @@ def bienvenida():
 #URL '/libros'
 #devuelva la lista de libros
 @app.get('/libros')
-async def lista_libros():
+async def lista_libros(pagina:int, lote:int, orden:Optional[str]=None):
     print("Atendiendo GET '/libros'")
     conn = await connect_db()
     try:
