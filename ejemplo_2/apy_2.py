@@ -2,6 +2,9 @@ from fastapi import FastAPI, UploadFile, File, Form
 from typing import Optional
 from pydantic import BaseModel
 import shutil
+from uvicorn import run
+from os import path
+from uuid import uuid4
 
 # creación del servidor
 app = FastAPI()
@@ -109,3 +112,46 @@ def borrar_usuario(id:int):
         usuarios.remove(usuario)
     
     return {"status_borrado", "ok"}
+
+#Form(...) -> para recibir datos de un formulario y es obligatorio
+@app.post("/fotos")
+async def guarda_foto(titulo:str=Form(None), descripcion:str=Form(...), foto:UploadFile=File(...)):
+    print("Titulo:", titulo, "\n", "Descripcion:", descripcion)
+    home_usuario = path.expanduser("~")
+    nombre_foto = str(uuid4())
+    extencion_foto = path.splitext(foto.filename)[1]
+    ruta_imagen = f'{home_usuario}\\fotos-ejemplos\\{nombre_foto}{extencion_foto}'
+    print('Guardando en :', ruta_imagen)
+    with open(ruta_imagen, "wb") as imagen:
+        contenido = await foto.read()
+        imagen.write(contenido)
+    
+    respuesta = {
+        "titulo": titulo,
+        "descripcion": descripcion,
+        "foto": foto.filename
+    }
+    return respuesta
+
+@app.post("/usuarios_p")
+async def guardar_usuario_(nombre:str=Form(...), direccion:str=Form(...), foto:UploadFile=File(...), usuario_vip:bool=Form(...)):
+    print("usuario a guardar:", nombre, direccion)
+    home_usuario = path.expanduser("~")
+    nombre_foto = str(uuid4())
+    extencion_foto = path.splitext(foto.filename)[1]
+    if usuario_vip:
+        ruta_imagen = f'{home_usuario}\\fotos-usuarios-vip\\{nombre_foto}{extencion_foto}'
+    else:
+        ruta_imagen = f'{home_usuario}\\fotos-usuarios-no-vip\\{nombre_foto}{extencion_foto}'
+    print('Guardando en :', ruta_imagen)
+    with open(ruta_imagen, "wb") as imagen:
+        contenido = await foto.read()
+        imagen.write(contenido)
+    respuesta = {
+        "nombre": nombre,
+        "direccion": direccion,
+        "foto": foto.filename
+    }
+    return respuesta
+
+run(app, host="localhost", port=8000)
