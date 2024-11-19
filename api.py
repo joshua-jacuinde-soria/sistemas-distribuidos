@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from bd_biblioteca import libros, usuarios
 from uvicorn import run
 from pydantic import BaseModel
-from psycopg import connect
+from asyncpg import connect
+
 
 app = FastAPI()
 
