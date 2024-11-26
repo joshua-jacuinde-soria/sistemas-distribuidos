@@ -15,7 +15,7 @@ class Usuario(BaseClass):
     id = Column(Integer, primary_key=True)
     nombre = Column(String(50))
     edad = Column(Integer)
-    direccion = Column(String(100))
+    domicilio = Column(String(100))
     email = Column('email',String(100))
     password = Column(String(50))
     fecha_registro = Column(DateTime(timezone=True), default=datetime.now)

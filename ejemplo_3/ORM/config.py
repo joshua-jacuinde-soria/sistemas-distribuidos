@@ -4,7 +4,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 #confirgurar la conexión a la base de datos
 #servidorBD://usuario:password@host:puerto/nombreBD
-SQLALCHEMY_DATABASE_URL = "Joshua_ESC://Joshua_Group:12345@localhost:5432/Sistemas_Distribuidos"
+# SQLALCHEMY_DATABASE_URL = "Joshua_ESC://Joshua_Group:12345@localhost:5432/Sistemas_Distribuidos"
+SQLALCHEMY_DATABASE_URL = "postgresql://Joshua_Group:12345@localhost:5432/Sistemas_Distribuidos"
 
 #conectarse mediante esquema app                    esto es parte de la conexión por esquema
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"options": "-csearch_path=app"})
