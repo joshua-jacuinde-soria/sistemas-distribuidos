@@ -7,7 +7,6 @@ import uuid
 from ORM import repo
 from sqlalchemy.orm import Session
 from ORM.config import generador_session
-from uvicorn import run
 
 # creación del servidor
 app = FastAPI()
@@ -51,18 +50,12 @@ def hola_mundo():
 
     return respuesta
 
-
-@app.get("/usuarios/{id}/compras/{id_compra}")
-def compras_usuario_por_id(id: int, id_compra: int):
-    print("buscando compra con id:", id_compra, " del usuario con id:", id)
+@app.get("/usuarios/{id}/compras/{precio}")
+def compras_usuario_por_id(id:int, precio:int, session: Session = Depends(generador_session)):
+    print("buscando compras de usuario con id:", id, "mayores a:", precio)
     # simulamos la consulta
-    compra = {
-        "id_compra": 787,
-        "producto": "TV",
-        "precio": 14000
-    }
-
-    return compra
+    return repo.compras_por_usuarios_mayores_a(session, precio, id)
+    
 
 @app.get("/usuarios/{id}")
 def usuario_por_id(id: int, sesion: Session = Depends(generador_session)):
@@ -71,13 +64,10 @@ def usuario_por_id(id: int, sesion: Session = Depends(generador_session)):
     usuario = repo.obtener_usuario(sesion, id)
     return usuario
     
-    
-
 @app.get("/usuarios")
-def lista_usuarios(*,lote:int=10,pag:int,orden:Optional[str]=None): #parametros de consulta ?lote=10&pag=1
-    print("lote:",lote, " pag:", pag, " orden:", orden)
-    #simulamos la consulta
-    return usuarios
+def lista_usuarios(sesion: Session = Depends(generador_session)):
+    print("obteniendo lista de usuarios")
+    return repo.obtener_todos_los_usuarios(sesion)
 
 @app.post("/usuarios")
 def guardar_usuario(usuario:UsuarioBase, parametro1:str):
@@ -135,14 +125,23 @@ async def guardar_foto(titulo:str=Form(None), descripcion:str=Form(...), foto:Up
 
     return {"titulo":titulo, "descripcion":descripcion, "foto":foto.filename}
 
+@app.get("/fotos/{id}")
+def obtener_foto_id(id: int, sesion: Session = Depends(generador_session)):
+    print("buscando foto con id:", id)
+    return repo.obtener_foto_id(sesion, id)
+
+@app.get("/fotos")
+def obtener_todas_las_fotos(sesion: Session = Depends(generador_session)):
+    print("obteniendo todas las fotos")
+    return repo.obtener_todas_las_fotos(sesion)
+
 @app.get("/compras/{id}")
 def obtener_compra_id(id: int, sesion: Session = Depends(generador_session)):
     print("buscando compra con id:", id)
     # simulamos la consulta
     return repo.obtener_compra_id(sesion, id)
 
-@app.get("/fotos/{id}")
-def obtener_foto_id(id: int, sesion: Session = Depends(generador_session)):
-    print("buscando foto con id:", id)
-    # simulamos la consulta
-    return repo.obtener_foto_id(sesion, id)
+@app.get("/compras")
+def obtener_todas_las_compras(sesion: Session = Depends(generador_session)):
+    print("obteniendo todas las compras")
+    return repo.obtener_todas_las_compras(sesion)
