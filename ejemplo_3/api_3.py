@@ -1,7 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, Form, Depends
 from typing import Optional
 from pydantic import BaseModel
-import shutil
 import os
 import uuid
 from ORM import repo
@@ -49,25 +48,19 @@ def hola_mundo():
     }
 
     return respuesta
-
-@app.get("/usuarios/{id}/compras/{precio}")
-def compras_usuario_por_id(id:int, precio:int, session: Session = Depends(generador_session)):
-    print("buscando compras de usuario con id:", id, "mayores a:", precio)
-    # simulamos la consulta
-    return repo.compras_por_usuarios_mayores_a(session, precio, id)
-    
+        
+@app.get("/usuarios")
+def lista_usuarios(edad_ini:int=0, edad_fin:int =0, sesion: Session = Depends(generador_session)):
+    if edad_ini == 0 and edad_fin == 0:
+        return repo.obtener_todos_los_usuarios(sesion)
+    else:
+        return repo.obtener_usuarios_rango_edad(sesion, edad_ini, edad_fin)
 
 @app.get("/usuarios/{id}")
 def usuario_por_id(id: int, sesion: Session = Depends(generador_session)):
     print("buscando usuario con id:", id)
     # simulamos la consulta
-    usuario = repo.obtener_usuario(sesion, id)
-    return usuario
-    
-@app.get("/usuarios")
-def lista_usuarios(sesion: Session = Depends(generador_session)):
-    print("obteniendo lista de usuarios")
-    return repo.obtener_todos_los_usuarios(sesion)
+    return repo.obtener_usuario(sesion, id)
 
 @app.post("/usuarios")
 def guardar_usuario(usuario:UsuarioBase, parametro1:str):
@@ -142,6 +135,9 @@ def obtener_compra_id(id: int, sesion: Session = Depends(generador_session)):
     return repo.obtener_compra_id(sesion, id)
 
 @app.get("/compras")
-def obtener_todas_las_compras(sesion: Session = Depends(generador_session)):
-    print("obteniendo todas las compras")
-    return repo.obtener_todas_las_compras(sesion)
+def compras_usuario_por_id(id:int = 0, precio:float = 0, session: Session = Depends(generador_session)):
+    if precio <= 0:
+        return repo.obtener_todas_las_compras(session)
+    else:
+        return repo.compras_por_usuarios_precio(session, precio, id)
+
