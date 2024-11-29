@@ -20,12 +20,10 @@ def obtener_usuarios_rango_edad(sesion:Session, edad_ini:int, edad_fin:int):
 def borrar_usuario(sesion:Session, id:int):
     # borramos el usuario con el id proporcionado
     usuario = obtener_usuario(sesion, id)
-    if usuario:
+    if usuario is not None:
         sesion.delete(usuario)
         sesion.commit()
-        return True
-    else:
-        return False
+    return {"mensaje": "usuario eliminado"}
 
 def obtener_todas_las_fotos(sesion:Session):
     # obtenemos todas las fotos
