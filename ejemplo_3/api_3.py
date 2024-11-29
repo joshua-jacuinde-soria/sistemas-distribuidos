@@ -94,8 +94,17 @@ def borrar_usuario(id:int, sesion: Session = Depends(generador_session)):
     #simulamos la eliminación
     repo.borrar_usuario(sesion, id)
     return {"mensaje":"usuario eliminado"}
-    
 
+@app.get("/usuarios/{id}/fotos")
+def obtener_fotos_usuario(id:int, sesion: Session = Depends(generador_session)):
+    print("obteniendo fotos de usuario con id:", id)
+    return repo.obtener_fotos_id_usuario(sesion, id)
+
+@app.get("/usuarios/{id}/compras")
+def obtener_compras_usuario(id:int, sesion: Session = Depends(generador_session)):
+    print("obteniendo compras de usuario con id:", id)
+    return repo.compras_por_usuario(sesion, id)
+    
 @app.post("/fotos")
 async def guardar_foto(titulo:str=Form(None), descripcion:str=Form(...), foto:UploadFile=File(...)):
     print("titulo:", titulo)

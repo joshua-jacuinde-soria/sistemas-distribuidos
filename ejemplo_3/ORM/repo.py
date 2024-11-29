@@ -21,6 +21,8 @@ def borrar_usuario(sesion:Session, id:int):
     # borramos el usuario con el id proporcionado
     usuario = obtener_usuario(sesion, id)
     if usuario is not None:
+        borrar_compra_id_usuario(sesion, id)
+        borrar_foto_id_usuario(sesion, id)
         sesion.delete(usuario)
         sesion.commit()
     return True
@@ -32,6 +34,19 @@ def obtener_todas_las_fotos(sesion:Session):
 def obtener_foto_id(sesion:Session, id:int):
     # obtenemos la foto con el id proporcionado
     return sesion.query(Foto).filter(Foto.id == id).first()
+
+def obtener_fotos_id_usuario(sesion:Session, id_usuario:int):
+    # obtenemos todas las fotos de un usuario
+    return sesion.query(Foto).filter(Foto.id_usuario == id_usuario).all()
+
+def borrar_foto_id_usuario(sesion:Session, id_usuario:int):
+    # borramos todas las fotos de un usuario
+    fotos = obtener_fotos_id_usuario(sesion, id_usuario)
+    if fotos is not None:
+        for foto in fotos:
+            sesion.delete(foto)
+        sesion.commit()
+    return True        
 
 def obtener_compra_id(sesion:Session, id:int):
     # obtenemos la compra con el id proporcionado
@@ -49,3 +64,16 @@ def compras_por_usuario(sesion:Session, id_usuario:int):
 def compras_por_usuarios_precio(sesion:Session, precio:float, id_usuario:int):
     # obtenemos todas las compras de un usuario mayores a un precio
     return sesion.query(Compra).filter(and_(Compra.id_usuario == id_usuario, Compra.precio >= precio)).all()
+
+def obtener_compras_id_usuario(sesion:Session, id_usuario:int):
+    # obtenemos todas las compras de un usuario
+    return sesion.query(Compra).filter(Compra.id_usuario == id_usuario).all()
+
+def borrar_compra_id_usuario(sesion:Session, id_usuario:int):
+    # borramos todas las compras de un usuario
+    compras = obtener_compras_id_usuario(sesion, id_usuario)
+    if compras is not None:
+        for compra in compras:
+            sesion.delete(compra)
+        sesion.commit()
+    return True
