@@ -89,17 +89,10 @@ def actualizar_usuario(id:int, usuario:UsuarioBase):
     return usr_act
     
 @app.delete("/usuario/{id}")
-def borrar_usuario(id:int):
-    #simulamos una consulta
-    if id>=0 and id< len(usuarios):
-        usuario = usuarios[id]
-    else:
-        usuario = None
-    
-    if usuario is not None:
-        usuarios.remove(usuario)
-    
-    return {"status_borrado", "ok"}
+def borrar_usuario(id:int, sesion: Session = Depends(generador_session)):
+    print("borrando usuario con id:", id)
+    #simulamos la eliminación
+    return repo.borrar_usuario(sesion, id)
 
 @app.post("/fotos")
 async def guardar_foto(titulo:str=Form(None), descripcion:str=Form(...), foto:UploadFile=File(...)):
