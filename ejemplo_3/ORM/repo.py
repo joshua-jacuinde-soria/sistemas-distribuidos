@@ -23,7 +23,7 @@ def borrar_usuario(sesion:Session, id:int):
     if usuario is not None:
         sesion.delete(usuario)
         sesion.commit()
-    return {"mensaje": "usuario eliminado"}
+    return True
 
 def obtener_todas_las_fotos(sesion:Session):
     # obtenemos todas las fotos
