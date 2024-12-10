@@ -6,6 +6,7 @@ import uuid
 from ORM import repo
 from sqlalchemy.orm import Session
 from ORM.config import generador_session
+import ORM.esquemas as esquemas
 
 # creación del servidor
 app = FastAPI()
@@ -78,15 +79,10 @@ def guardar_usuario(usuario:UsuarioBase, parametro1:str):
     return usr_nuevo
 
 @app.put("/usuario/{id}")
-def actualizar_usuario(id:int, usuario:UsuarioBase):
-    #simulamos consulta
-    usr_act = usuarios[id]
+def actualizar_usuario(id:int, usuario:esquemas.UsuarioBase = None, sesion: Session = Depends(generador_session)):
+    print("actualizando usuario con id:", id)
     #simulamos la actualización
-    usr_act["nombre"] = usuario.nombre
-    usr_act["edad"] = usuario.edad
-    usr_act["domicilio"] = usuario.domicilio    
-
-    return usr_act
+    return repo.actualizar_usuario(sesion, id, usuario)
     
 @app.delete("/usuario/{id}")
 def borrar_usuario(id:int, sesion: Session = Depends(generador_session)):
@@ -132,6 +128,12 @@ def obtener_todas_las_fotos(sesion: Session = Depends(generador_session)):
     print("obteniendo todas las fotos")
     return repo.obtener_todas_las_fotos(sesion)
 
+@app.put("/foto/{id}")
+def actualizar_foto(id:int, foto:esquemas.FotoBase, sesion: Session = Depends(generador_session)):
+    print("actualizando foto con id:", id)
+    #simulamos la actualización
+    return repo.actualizar_foto(sesion, id, foto)
+
 @app.get("/compras/{id}")
 def obtener_compra_id(id: int, sesion: Session = Depends(generador_session)):
     print("buscando compra con id:", id)
@@ -145,3 +147,8 @@ def compras_usuario_por_id(id:int = 0, precio:float = 0, session: Session = Depe
     else:
         return repo.compras_por_usuarios_precio(session, precio, id)
 
+@app.put("/compra/{id}")
+def actualizar_compra(id:int, compra:esquemas.CompraBase, sesion: Session = Depends(generador_session)):
+    print("actualizando compra con id:", id)
+    #simulamos la actualización
+    return repo.actualizar_compra(sesion, id, compra)

@@ -2,6 +2,7 @@ from ORM.config import SessionClass
 from ORM.modelos import Usuario, Compra, Foto
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
+import ORM.esquemas as esquemas
 
 # Esta funcion es llamda por el api.py para atender el Get '/usuarios/{id}'
 
@@ -27,6 +28,22 @@ def borrar_usuario(sesion:Session, id:int):
         sesion.commit()
     return True
 
+def actualizar_usuario(sesion:Session, id:int, usuario:esquemas.UsuarioBase):
+    # actualizamos el usuario con el id proporcionado
+    usuario_db = obtener_usuario(sesion, id)
+    if usuario_db is not None:
+        usuario_db.nombre = usuario.nombre
+        usuario_db.edad = usuario.edad
+        usuario_db.domicilio = usuario.domicilio
+        usuario_db.email = usuario.email
+        usuario_db.password = usuario.password
+        sesion.commit()
+        sesion.refresh(usuario_db)
+        print("usuario actualizado:", usuario)
+        return usuario
+    else:
+        return {"mensaje":"usuario no encontrado"}
+
 def obtener_todas_las_fotos(sesion:Session):
     # obtenemos todas las fotos
     return sesion.query(Foto).all()
@@ -46,7 +63,21 @@ def borrar_foto_id_usuario(sesion:Session, id_usuario:int):
         for foto in fotos:
             sesion.delete(foto)
         sesion.commit()
-    return True        
+    return True    
+
+def actualizar_foto(sesion:Session, id:int, foto:esquemas.FotoBase):
+    # actualizamos la foto con el id proporcionado
+    foto_db = obtener_foto_id(sesion, id)
+    if foto_db is not None:
+        foto_db.titulo = foto.titulo
+        foto_db.descripcion = foto.descripcion
+        foto_db.ruta = foto.ruta
+        sesion.commit()
+        sesion.refresh(foto_db)
+        print("foto actualizada:", foto)
+        return foto
+    else:
+        return {"mensaje":"foto no encontrada"}    
 
 def obtener_compra_id(sesion:Session, id:int):
     # obtenemos la compra con el id proporcionado
@@ -77,3 +108,16 @@ def borrar_compra_id_usuario(sesion:Session, id_usuario:int):
             sesion.delete(compra)
         sesion.commit()
     return True
+
+def actualizar_compra(sesion:Session, id:int, compra:esquemas.CompraBase):
+    # actualizamos la compra con el id proporcionado
+    compra_db = obtener_compra_id(sesion, id)
+    if compra_db is not None:
+        compra_db.producto = compra.producto
+        compra_db.precio = compra.precio
+        sesion.commit()
+        sesion.refresh(compra_db)
+        print("compra actualizada:", compra)
+        return compra
+    else:
+        return {"mensaje":"compra no encontrada"}
