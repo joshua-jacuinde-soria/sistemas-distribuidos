@@ -43,6 +43,15 @@ def actualizar_usuario(sesion:Session, id:int, usuario:esquemas.UsuarioBase):
         return usuario
     else:
         return {"mensaje":"usuario no encontrado"}
+    
+def insertar_usuario(sesion:Session, usuario:esquemas.UsuarioBase):
+    # insertamos un usuario
+    usuario_db = Usuario(nombre=usuario.nombre, edad=usuario.edad, domicilio=usuario.domicilio, email=usuario.email, password=usuario.password)
+    sesion.add(usuario_db)
+    sesion.commit()
+    sesion.refresh(usuario_db)
+    print("usuario insertado:", usuario)
+    return usuario_db
 
 def obtener_todas_las_fotos(sesion:Session):
     # obtenemos todas las fotos
@@ -77,7 +86,19 @@ def actualizar_foto(sesion:Session, id:int, foto:esquemas.FotoBase):
         print("foto actualizada:", foto)
         return foto
     else:
-        return {"mensaje":"foto no encontrada"}    
+        return {"mensaje":"foto no encontrada"}   
+    
+def insertar_foto(sesion:Session, foto:esquemas.FotoBase, id_usuario:int):
+    # insertamos una foto
+    if obtener_usuario(sesion, id_usuario) is None:
+        return {"mensaje":"usuario no encontrado"}
+    else:
+        foto_db = Foto(titulo=foto.titulo, descripcion=foto.descripcion, ruta=foto.ruta, id_usuario=id_usuario)
+        sesion.add(foto_db)
+        sesion.commit()
+        sesion.refresh(foto_db)
+        print("foto insertada:", foto)
+        return foto_db 
 
 def obtener_compra_id(sesion:Session, id:int):
     # obtenemos la compra con el id proporcionado
@@ -121,3 +142,15 @@ def actualizar_compra(sesion:Session, id:int, compra:esquemas.CompraBase):
         return compra
     else:
         return {"mensaje":"compra no encontrada"}
+    
+def insertar_compra(sesion:Session, compra:esquemas.CompraBase, id_usuario:int):
+    # insertamos una compra
+    if obtener_usuario(sesion, id_usuario) is None:
+        return {"mensaje":"usuario no encontrado"}
+    else:
+        compra_db = Compra(producto=compra.producto, precio=compra.precio, id_usuario=id_usuario)
+        sesion.add(compra_db)
+        sesion.commit()
+        sesion.refresh(compra_db)
+        print("compra insertada:", compra)
+        return compra_db

@@ -64,19 +64,10 @@ def usuario_por_id(id: int, sesion: Session = Depends(generador_session)):
     return repo.obtener_usuario(sesion, id)
 
 @app.post("/usuarios")
-def guardar_usuario(usuario:UsuarioBase, parametro1:str):
-    print("usuario a guardar:", usuario, ", parametro1:", parametro1)
-    #simulamos guardado en la base.
-    
-    usr_nuevo = {}
-    usr_nuevo["id"] = len(usuarios)
-    usr_nuevo["nombre"] = usuario.nombre
-    usr_nuevo["edad"] = usuario.edad
-    usr_nuevo["domicilio"] = usuario.domicilio
-
-    usuarios.append(usuario)
-
-    return usr_nuevo
+def insertar_usuario(usuario:esquemas.UsuarioBase, sesion: Session = Depends(generador_session)):
+    print("insertando usuario:", usuario)
+    #simulamos la inserción
+    return repo.insertar_usuario(sesion, usuario)
 
 @app.put("/usuario/{id}")
 def actualizar_usuario(id:int, usuario:esquemas.UsuarioBase = None, sesion: Session = Depends(generador_session)):
@@ -103,9 +94,6 @@ def obtener_compras_usuario(id:int, sesion: Session = Depends(generador_session)
     
 @app.post("/fotos")
 async def guardar_foto(titulo:str=Form(None), descripcion:str=Form(...), foto:UploadFile=File(...)):
-    print("titulo:", titulo)
-    print("descripcion:", descripcion)
-
     home_usuario=os.path.expanduser("~")
     nombre_archivo=uuid.uuid4().hex  #generamos nombre único en formato hexadecimal
     extension = os.path.splitext(foto.filename)[1]
@@ -116,7 +104,8 @@ async def guardar_foto(titulo:str=Form(None), descripcion:str=Form(...), foto:Up
         contenido = await foto.read() #read funciona de manera asyncrona
         imagen.write(contenido)
 
-    return {"titulo":titulo, "descripcion":descripcion, "foto":foto.filename}
+    repo.insertar_foto(esquemas.FotoBase(titulo=titulo, descripcion=descripcion, ruta=ruta_imagen))
+    return {"mensaje":"foto guardada"}
 
 @app.get("/fotos/{id}")
 def obtener_foto_id(id: int, sesion: Session = Depends(generador_session)):
@@ -152,3 +141,9 @@ def actualizar_compra(id:int, compra:esquemas.CompraBase, sesion: Session = Depe
     print("actualizando compra con id:", id)
     #simulamos la actualización
     return repo.actualizar_compra(sesion, id, compra)
+
+@app.post("/compras/{id_usuario}")
+def insertar_compra(compra:esquemas.CompraBase, id_usuario:int, sesion: Session = Depends(generador_session)):
+    print("insertando compra:", compra)
+    #simulamos la inserción
+    return repo.insertar_compra(sesion, compra, id_usuario)
