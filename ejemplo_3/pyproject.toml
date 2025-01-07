@@ -1,10 +1,12 @@
 [tool.poetry]
-name = "sd24o_render-fastapi"
+name = "sistemas_distribuidos/ejemplo_3"
 version = "0.1.0"
 description = "Example of FastAPI deployment to render.com"
-authors = ["Daniela Aguirre-Guerrero <daguirre@cua.uam.mx>"]
+authors = ["Joshua Soria <joshua.jacuinde@cua.uam.mx>"]
 readme = "README.md"
 package-mode = false
+
+
 [tool.poetry.dependencies]
 python = "^3.11.5"
 fastapi = "^0.115.4"
@@ -12,6 +14,8 @@ uvicorn = "^0.32.0"
 sqlalchemy = "^2.0.23"
 psycopg2-binary = "^2.9.9"
 python-multipart = "^0.0.17"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
