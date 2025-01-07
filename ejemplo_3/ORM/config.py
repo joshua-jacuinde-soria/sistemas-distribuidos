@@ -1,14 +1,19 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+
+from ORM import modelos
+from os import getenv
 
 #confirgurar la conexión a la base de datos
 #servidorBD://usuario:password@host:puerto/nombreBD
-# SQLALCHEMY_DATABASE_URL = "Joshua_ESC://Joshua_Group:12345@localhost:5432/Sistemas_Distribuidos"
-SQLALCHEMY_DATABASE_URL = "postgresql://Joshua_Group:12345@localhost:5432/Sistemas_Distribuidos"
+## SQLALCHEMY_DATABASE_URL = "postgresql://Joshua_Group:12345@localhost:5432/Sistemas_Distribuidos"
 
 #conectarse mediante esquema app                    esto es parte de la conexión por esquema
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"options": "-csearch_path=app"})
+##engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"options": "-csearch_path=app"})
+
+
+engine = create_engine(getenv("db_uri", "sqlite://base-ejemplo.db"))
+modelos.BaseClass
 
 #obtenemos la clase que nos permite crear objetos de sesión
 SessionClass = sessionmaker(engine)
@@ -21,4 +26,3 @@ def generador_session():
         session.close()
 
 #obtener la clase base para mapear las tablas
-BaseClass = declarative_base()

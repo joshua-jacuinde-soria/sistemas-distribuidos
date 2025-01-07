@@ -1,12 +1,14 @@
 # los modelos representan el mapeo de las tablas de la base de datos
 # la clase base de las clases modelos es BaseClass
 
-from ORM.config import BaseClass
+from sqlalchemy.ext.declarative import declarative_base
 
 # Importamos de sqlalchemy los tipos de datos que  usan las tablas
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Float
 # importamos la clase datetime para obtener la fecha y hora actual
 from datetime import datetime
+
+BaseClass = declarative_base()  #creamos la clase base para mapear las tablas
 
 class Usuario(BaseClass):
     # Nombre de la tabla
